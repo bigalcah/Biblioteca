@@ -25,7 +25,7 @@ class Consulta {
             conn.commit();
 
         }catch (SQLException e){
-            (if )
+            //(if )
         }
 
     }
