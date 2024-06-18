@@ -22,11 +22,17 @@ public abstract class MenuBase extends JFrame implements ActionListener {
     protected JButton btnEnviar;
     protected JTable tabla;
     protected JScrollPane scrollPane;
-    DefaultTableModel model;
+    protected DefaultTableModel model;
+    protected JLabel labelCampo1;
+    protected JLabel labelCampo2;
+    protected JLabel labelCampo3;
+    protected JLabel labelCampo4;
+    protected JLabel labelCampo5;
+    protected JLabel labelInstruccion;
 
     public MenuBase() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 800, 600);
         setLocationRelativeTo(null);
 
         contentPane = new JPanel(new GridBagLayout());
@@ -60,10 +66,19 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         campo4 = new JTextField(20);
         campo5 = new JTextField(20);
 
+        labelCampo1 = new JLabel("Campo 1:");
+        labelCampo2 = new JLabel("Campo 2:");
+        labelCampo3 = new JLabel("Campo 3:");
+        labelCampo4 = new JLabel("Campo 4:");
+        labelCampo5 = new JLabel("Campo 5:");
+        labelInstruccion = new JLabel("Instruccion:");
+
         btnEnviar = new JButton("Enviar");
         btnEnviar.addActionListener(this);
 
-        //agregar modelo y tabla.
+        tabla = new JTable();
+        scrollPane = new JScrollPane(tabla);
+        scrollPane.setPreferredSize(new Dimension(780, 400));
 
         agregarComponentes("inicial");
     }
@@ -78,7 +93,7 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         if ("eliminar".equals(accion)) {
             gbc.gridx = 0;
             gbc.gridy = 0;
-            contentPane.add(new JLabel("Campo 1:"), gbc);
+            contentPane.add(labelCampo1, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo1, gbc);
@@ -86,40 +101,48 @@ public abstract class MenuBase extends JFrame implements ActionListener {
             gbc.gridx = 1;
             gbc.gridy = 1;
             contentPane.add(btnEnviar, gbc);
-        } else if("mostrar".equals(accion)){
 
-        }else {
+            gbc.gridy = 2;
+            gbc.gridx = 0;
+            contentPane.add(labelInstruccion, gbc);
+
+        } else if ("mostrar".equals(accion)) {
             gbc.gridx = 0;
             gbc.gridy = 0;
-            contentPane.add(new JLabel("Campo 1:"), gbc);
+            gbc.gridwidth = 2;
+            contentPane.add(scrollPane, gbc);
+        } else {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            contentPane.add(labelCampo1, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo1, gbc);
 
             gbc.gridx = 0;
             gbc.gridy = 1;
-            contentPane.add(new JLabel("Campo 2:"), gbc);
+            contentPane.add(labelCampo2, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo2, gbc);
 
             gbc.gridx = 0;
             gbc.gridy = 2;
-            contentPane.add(new JLabel("Campo 3:"), gbc);
+            contentPane.add(labelCampo3, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo3, gbc);
 
             gbc.gridx = 0;
             gbc.gridy = 3;
-            contentPane.add(new JLabel("Campo 4:"), gbc);
+            contentPane.add(labelCampo4, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo4, gbc);
 
             gbc.gridx = 0;
             gbc.gridy = 4;
-            contentPane.add(new JLabel("Campo 5:"), gbc);
+            contentPane.add(labelCampo5, gbc);
 
             gbc.gridx = 1;
             contentPane.add(campo5, gbc);
@@ -127,14 +150,18 @@ public abstract class MenuBase extends JFrame implements ActionListener {
             gbc.gridx = 1;
             gbc.gridy = 5;
             contentPane.add(btnEnviar, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 6;
+            contentPane.add(labelInstruccion, gbc);
         }
 
         contentPane.revalidate();
         contentPane.repaint();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
+@Override
+    public  void actionPerformed(ActionEvent e) {
         if (e.getSource() == agregarItem) {
             agregarComponentes("agregar");
         } else if (e.getSource() == eliminarItem) {
@@ -143,6 +170,8 @@ public abstract class MenuBase extends JFrame implements ActionListener {
             agregarComponentes("modificar");
         } else if (e.getSource() == btnEnviar) {
             JOptionPane.showMessageDialog(this, "Acción realizada");
+        }else if (e.getSource() == mostrarItem) {
+            agregarComponentes("mostrar");
         }
     }
 }

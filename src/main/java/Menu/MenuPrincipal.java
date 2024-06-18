@@ -1,4 +1,6 @@
 package Menu;
+import BBDD.SQL;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -14,8 +16,10 @@ public class MenuPrincipal extends JFrame implements ActionListener{
     private JPanel panel;
     private JLabel mensajeInicial= new JLabel("Bienvenido al Sistema, Usted" +
             "puede realizar las siguentes acciones:");
+    public SQL admin;
 
-    public MenuPrincipal() {
+    public MenuPrincipal(SQL admin) {
+        this.admin = admin;
         setTitle("Menú Principal");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -62,7 +66,7 @@ public class MenuPrincipal extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent event) {
         if(event.getSource() == btnClientes){
-            MenuClientes menuClientes = new MenuClientes();
+            MenuClientes menuClientes = new MenuClientes(admin);
             menuClientes.setVisible(true);
 
         }else if(event.getSource() == btnLibros){
