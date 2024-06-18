@@ -2,6 +2,7 @@ package Menu;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,13 +13,16 @@ public abstract class MenuBase extends JFrame implements ActionListener {
     protected JMenuBar menuBar;
     protected JMenuItem agregarItem;
     protected JMenuItem eliminarItem;
-    protected JMenuItem modificarItem;
+    protected JMenuItem modificarItem, mostrarItem;
     protected JTextField campo1;
     protected JTextField campo2;
     protected JTextField campo3;
     protected JTextField campo4;
     protected JTextField campo5;
     protected JButton btnEnviar;
+    protected JTable tabla;
+    protected JScrollPane scrollPane;
+    DefaultTableModel model;
 
     public MenuBase() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -46,6 +50,10 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         modificarItem.addActionListener(this);
         menu.add(modificarItem);
 
+        mostrarItem = new JMenuItem("Mostrar");
+        mostrarItem.addActionListener(this);
+        menu.add(mostrarItem);
+
         campo1 = new JTextField(20);
         campo2 = new JTextField(20);
         campo3 = new JTextField(20);
@@ -54,6 +62,8 @@ public abstract class MenuBase extends JFrame implements ActionListener {
 
         btnEnviar = new JButton("Enviar");
         btnEnviar.addActionListener(this);
+
+        //agregar modelo y tabla.
 
         agregarComponentes("inicial");
     }
@@ -76,7 +86,9 @@ public abstract class MenuBase extends JFrame implements ActionListener {
             gbc.gridx = 1;
             gbc.gridy = 1;
             contentPane.add(btnEnviar, gbc);
-        } else {
+        } else if("mostrar".equals(accion)){
+
+        }else {
             gbc.gridx = 0;
             gbc.gridy = 0;
             contentPane.add(new JLabel("Campo 1:"), gbc);

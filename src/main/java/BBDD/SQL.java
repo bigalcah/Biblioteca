@@ -23,4 +23,32 @@ public class SQL {
         return conexion;
     }
 
+    public void manejoExcepciones(Connection conn, Exception ex){
+        if(conn != null){
+            try {
+            conn.rollback();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            ex.printStackTrace();
+        }
+    }
+
+    public void cierreConexion(Connection conn, PreparedStatement stmt){
+        if(stmt != null){
+            try {
+                stmt.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }if(conn != null){
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
