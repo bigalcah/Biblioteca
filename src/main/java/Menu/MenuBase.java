@@ -160,17 +160,15 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         contentPane.repaint();
     }
 
-@Override
-    public  void actionPerformed(ActionEvent e) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == agregarItem) {
             agregarComponentes("agregar");
         } else if (e.getSource() == eliminarItem) {
             agregarComponentes("eliminar");
         } else if (e.getSource() == modificarItem) {
             agregarComponentes("modificar");
-        } else if (e.getSource() == btnEnviar) {
-            JOptionPane.showMessageDialog(this, "Acción realizada");
-        }else if (e.getSource() == mostrarItem) {
+        } else if (e.getSource() == mostrarItem) {
             agregarComponentes("mostrar");
         }
     }

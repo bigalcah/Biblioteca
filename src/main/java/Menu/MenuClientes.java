@@ -13,6 +13,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class MenuClientes extends MenuBase {
+    private String estadoActual = "inicial";
     public SQL admin;
 
     public MenuClientes(SQL admin) {
@@ -24,16 +25,9 @@ public class MenuClientes extends MenuBase {
         labelCampo4.setText("Telefono");
         labelCampo5.setText("Email");
 
-        initUI();
     }
 
-    private void initUI() {
-        agregarItem.addActionListener(this);
-        eliminarItem.addActionListener(this);
-        modificarItem.addActionListener(this);
-        mostrarItem.addActionListener(this);
-        btnEnviar.addActionListener(this);
-    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -41,17 +35,21 @@ public class MenuClientes extends MenuBase {
 
         if (e.getSource() == agregarItem) {
             agregarComponentes("agregar");
+            this.estadoActual = "agregar";
             labelInstruccion.setText("Ingrese todos los valores solicitados");
         } else if (e.getSource() == eliminarItem) {
             agregarComponentes("eliminar");
+            this.estadoActual = "eliminar";
             labelInstruccion.setText("Ingrese el Rut del cliente que desea eliminar");
         } else if (e.getSource() == modificarItem) {
             agregarComponentes("modificar");
+            this.estadoActual = "modificar";
             labelInstruccion.setText("Ingrese el RUT del cliente que desea modificar, además de los siguientes parámetros");
         } else if (e.getSource() == mostrarItem) {
             agregarComponentes("mostrar");
+            this.estadoActual = "mostrar";
             mostrarClientes(consulta);
-        } else if (e.getSource() == btnEnviar) {
+        } else if (e.getSource() == this.btnEnviar) {
             String accion = obtenerAccionActual();
             try {
                 if ("agregar".equals(accion)) {
@@ -77,18 +75,15 @@ public class MenuClientes extends MenuBase {
                     JOptionPane.showMessageDialog(this, "Cliente modificado exitosamente");
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al ejecutar la operación", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
+            System.out.println("boton presionado");
         }
     }
 
     public String obtenerAccionActual() {
-        if (agregarItem.isArmed()) return "agregar";
-        if (eliminarItem.isArmed()) return "eliminar";
-        if (modificarItem.isArmed()) return "modificar";
-        if (mostrarItem.isArmed()) return "mostrar";
-        return "inicial";
+        return this.estadoActual;
     }
 
     private void mostrarClientes(Consulta consulta) {

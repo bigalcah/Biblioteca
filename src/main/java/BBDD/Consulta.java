@@ -1,4 +1,5 @@
 package BBDD;
+import javax.swing.*;
 import java.sql.*;
 
 public class Consulta {
@@ -33,6 +34,7 @@ public class Consulta {
 
         } catch (SQLException e) {
             conn.rollback();
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la operación", "Error", JOptionPane.ERROR_MESSAGE);
 
             e.printStackTrace();
         }finally {
@@ -80,6 +82,7 @@ public class Consulta {
             statement.execute();
             conn.commit();
         }catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Error al ejecutar la operación", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }finally {
             admin.cierreConexion(conn,statement);
