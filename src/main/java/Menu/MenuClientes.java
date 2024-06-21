@@ -9,11 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class MenuClientes extends MenuBase {
-    private String estadoActual = "inicial";
     public SQL admin;
 
     public MenuClientes(SQL admin) {
@@ -27,8 +25,6 @@ public class MenuClientes extends MenuBase {
 
     }
 
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Consulta consulta = new Consulta(admin);
@@ -37,20 +33,24 @@ public class MenuClientes extends MenuBase {
             agregarComponentes("agregar");
             this.estadoActual = "agregar";
             labelInstruccion.setText("Ingrese todos los valores solicitados");
+
         } else if (e.getSource() == eliminarItem) {
             agregarComponentes("eliminar");
             this.estadoActual = "eliminar";
             labelInstruccion.setText("Ingrese el Rut del cliente que desea eliminar");
+
         } else if (e.getSource() == modificarItem) {
             agregarComponentes("modificar");
             this.estadoActual = "modificar";
             labelInstruccion.setText("Ingrese el RUT del cliente que desea modificar, además de los siguientes parámetros");
+
         } else if (e.getSource() == mostrarItem) {
             agregarComponentes("mostrar");
             this.estadoActual = "mostrar";
             mostrarClientes(consulta);
+
         } else if (e.getSource() == this.btnEnviar) {
-            String accion = obtenerAccionActual();
+            String accion = this.getEstadoActual();
             try {
                 if ("agregar".equals(accion)) {
                     consulta.registrarCliente(
@@ -61,9 +61,11 @@ public class MenuClientes extends MenuBase {
                             campo5.getText()
                     );
                     JOptionPane.showMessageDialog(this, "Cliente agregado exitosamente");
+
                 } else if ("eliminar".equals(accion)) {
                     consulta.eliminarCliente(campo1.getText());
                     JOptionPane.showMessageDialog(this, "Cliente eliminado exitosamente");
+
                 } else if ("modificar".equals(accion)) {
                     consulta.ActualizarCliente(
                             campo1.getText(),
@@ -79,41 +81,19 @@ public class MenuClientes extends MenuBase {
                 ex.printStackTrace();
             }
             System.out.println("boton presionado");
+            limpiarCampos();
         }
     }
 
-    public String obtenerAccionActual() {
-        return this.estadoActual;
-    }
-
-    private void mostrarClientes(Consulta consulta) {
+    protected void mostrarClientes(Consulta consulta) {
         try (Connection conn = new SQL().getConnection()) {
             ResultSet rs = consulta.mostrarClientes(conn);
-            DefaultTableModel model = obtenerDatosClientes(rs);
+            DefaultTableModel model = obtenerDatosRS(rs);
             tabla.setModel(model);
             rs.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al mostrar las clientes", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private DefaultTableModel obtenerDatosClientes(ResultSet rs) throws SQLException {
-        ResultSetMetaData metaData = rs.getMetaData();
-        int columnas = metaData.getColumnCount();
-        String[] titulos = new String[columnas];
-
-        for (int i = 1; i <= columnas; i++) {
-            titulos[i - 1] = metaData.getColumnName(i);
-        }
-        DefaultTableModel model = new DefaultTableModel(titulos, 0);
-        while (rs.next()) {
-            Object[] fila = new Object[columnas];
-            for (int i = 1; i <= columnas; i++) {
-                fila[i - 1] = rs.getObject(i);
-            }
-            model.addRow(fila);
-        }
-        return model;
     }
 
     @Override
@@ -200,11 +180,5 @@ public class MenuClientes extends MenuBase {
         contentPane.repaint();
     }
 
-    private void limpiarCampos() {
-        campo1.setText("");
-        campo2.setText("");
-        campo3.setText("");
-        campo4.setText("");
-        campo5.setText("");
-    }
+
 }

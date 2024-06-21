@@ -1,11 +1,18 @@
 package Menu;
 
+import BBDD.Consulta;
+import BBDD.SQL;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 public abstract class MenuBase extends JFrame implements ActionListener {
     protected JPanel contentPane;
@@ -29,6 +36,7 @@ public abstract class MenuBase extends JFrame implements ActionListener {
     protected JLabel labelCampo4;
     protected JLabel labelCampo5;
     protected JLabel labelInstruccion;
+    protected String estadoActual = "inicial";
 
     public MenuBase() {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -81,6 +89,37 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         scrollPane.setPreferredSize(new Dimension(780, 400));
 
         agregarComponentes("inicial");
+    }
+
+    protected String getEstadoActual(){ return this.estadoActual;}
+
+    protected void limpiarCampos() {
+        campo1.setText("");
+        campo2.setText("");
+        campo3.setText("");
+        campo4.setText("");
+        campo5.setText("");
+    }
+
+
+
+    protected DefaultTableModel obtenerDatosRS(ResultSet rs) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnas = metaData.getColumnCount();
+        String[] titulos = new String[columnas];
+
+        for (int i = 1; i <= columnas; i++) {
+            titulos[i - 1] = metaData.getColumnName(i);
+        }
+        DefaultTableModel model = new DefaultTableModel(titulos, 0);
+        while (rs.next()) {
+            Object[] fila = new Object[columnas];
+            for (int i = 1; i <= columnas; i++) {
+                fila[i - 1] = rs.getObject(i);
+            }
+            model.addRow(fila);
+        }
+        return model;
     }
 
     protected void agregarComponentes(String accion) {
