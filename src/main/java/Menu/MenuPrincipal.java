@@ -70,14 +70,15 @@ public class MenuPrincipal extends JFrame implements ActionListener{
             menuClientes.setVisible(true);
 
         }else if(event.getSource() == btnLibros){
-           // MenuLibros menuLibros = new MenuLibros(admin);
-            // menuLibros.setVisible(true);
+            MenuLibros menuLibros = new MenuLibros(admin);
+            menuLibros.setVisible(true);
 
         }else if(event.getSource() == btnAutores){
             MenuAutores menuAutores = new MenuAutores(admin);
             menuAutores.setVisible(true);
         }else if(event.getSource() == btnVentas){
-           // MenuVentas menuVentas = new MenuVentas(admin);
+           MenuVentas menuVentas = new MenuVentas(admin);
+           menuVentas.setVisible(true);
 
         }
 

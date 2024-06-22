@@ -199,6 +199,7 @@ public abstract class MenuBase extends JFrame implements ActionListener {
         contentPane.repaint();
     }
 
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == agregarItem) {

@@ -106,7 +106,7 @@ public class Consulta {
     }
 
     public void registrarAutor(String nombre, String pais, Date fechaNacimiento) throws SQLException {
-        String sql = "INSERT INTO Autor VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Autor (nombre, pais, fecha_nacimiento) VALUES (?, ?, ?)";
         PreparedStatement statement = null;
         Connection conn = null;
         try{
@@ -130,8 +130,8 @@ public class Consulta {
         }
     }
 
-    public void eliminarAutor(String id) throws SQLException {
-        String sql = "DELETE FROM Autor WHERE rut=?";
+    public void eliminarAutor(int id) throws SQLException {
+        String sql = "DELETE FROM Autor WHERE id=?";
         PreparedStatement statement = null;
         Connection conn = null;
         try{
@@ -140,9 +140,11 @@ public class Consulta {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
             statement = conn.prepareStatement(sql);
-            statement.setString(1, id);
+            statement.setInt(1, id);
             statement.execute();
-        }catch (SQLException e){
+
+            conn.commit();
+        }catch (PSQLException e){
             conn.rollback();
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,7 +155,7 @@ public class Consulta {
 
 
 
-    public void modificarAutor(String nombre, String pais, Date fechaNacimiento) throws SQLException {
+    public void modificarAutor(int id, String nombre, String pais, Date fechaNacimiento) throws SQLException {
         String sql = "UPDATE Cliente SET nombre=?, pais=?, fecha_acimiento=? WHERE rut=?";
         Connection conn = null;
         PreparedStatement statement = null;
@@ -177,15 +179,17 @@ public class Consulta {
         }
     }
 
-    public ResultSet mostrarLibros(Connection conn) throws SQLException {
+    public ResultSet mostrarLibros() throws SQLException {
         String sql = "SELECT * FROM Libro";
         PreparedStatement statement = null;
-        conn = admin.getConnection();
+        Connection conn = admin.getConnection();
         conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        return statement.executeQuery(sql);
+        statement = conn.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        return rs;
     }
 
-    public void registrarLibro(String titulo, String id_autor, Date fechaPublicacion, float precio, int stock) throws SQLException {
+    public void registrarLibro(String titulo, int id_autor, Date fechaPublicacion, float precio, int stock) throws SQLException {
         String sql = "INSERT INTO Libro (titulo, id_autor, fecha_publicacion, precio, stock) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = null;
         Connection conn = null;
@@ -196,7 +200,7 @@ public class Consulta {
 
             statement = conn.prepareStatement(sql);
             statement.setString(1, titulo);
-            statement.setString(2, id_autor);
+            statement.setInt(2, id_autor);
             statement.setDate(3, fechaPublicacion);
             statement.setFloat(4, precio);
             statement.setInt(5, stock);
@@ -212,8 +216,8 @@ public class Consulta {
         }
     }
 
-    public void modificarLibro(int id, int stock) throws SQLException {
-        String sql = "UPDATE Libro SET stock=? WHERE id=?";
+    public void modificarLibro(int id, int stock, float precio) throws SQLException {
+        String sql = "UPDATE Libro SET stock=?, precio=? WHERE id=?";
         PreparedStatement statement = null;
         Connection conn = null;
         try{
@@ -223,7 +227,8 @@ public class Consulta {
             statement = conn.prepareStatement(sql);
 
             statement.setInt(1, stock);
-            statement.setInt(2, id);
+            statement.setFloat(2, precio);
+            statement.setInt(3, id);
             statement.execute();
             conn.commit();
 
@@ -253,6 +258,44 @@ public class Consulta {
             conn.rollback();
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            admin.cierreConexion(conn,statement);
+        }
+    }
+
+    public ResultSet mostrarVentas() throws SQLException {
+        String sql = "SELECT * FROM Venta";
+        PreparedStatement statement = null;
+        Connection conn = admin.getConnection();
+        conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        statement = conn.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        return rs;
+    }
+
+    public void realizarVenta(int id_libro, String rut_cliente, Date fechaVenta,
+                              int cantidad) throws SQLException {
+        String sql = "INSERT INTO Venta (id_libro, rut_cliente, fecha_venta, cantidad, total) " +
+                "VALUES (?,?,?,?,?);";
+        Connection conn = null;
+        PreparedStatement statement = null;
+        try{
+            conn = admin.getConnection();
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            statement = conn.prepareStatement(sql);
+
+            statement.setInt(1, id_libro);
+            statement.setString(2, rut_cliente);
+            statement.setDate(3, fechaVenta);
+            statement.setInt(4, cantidad);
+            statement.execute();
+            conn.commit();
+
+        }catch (SQLException ex){
+            conn.rollback();
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }finally {
             admin.cierreConexion(conn,statement);
         }

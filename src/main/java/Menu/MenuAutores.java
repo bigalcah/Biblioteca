@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -26,6 +27,7 @@ public class MenuAutores extends MenuBase {
         if(e.getSource() == this.agregarItem){
             this.estadoActual = "agregar";
             agregarComponentes("agregar");
+            this.labelInstruccion.setText("Instrucciones: Ingrese los campos solicitados");
 
         }if(e.getSource() == this.mostrarItem){
             this.estadoActual = "mostrar";
@@ -35,17 +37,46 @@ public class MenuAutores extends MenuBase {
         }if(e.getSource() == this.modificarItem){
             this.estadoActual = "modificar";
             agregarComponentes("modificar");
+            this.labelInstruccion.setText("Instrucciones: Ingrese el id del Autor que desea" +
+                    "modificar, seguido de los demas campos");
 
         }if(e.getSource() == this.eliminarItem){
             this.estadoActual = "eliminar";
             agregarComponentes("eliminar");
+            this.labelCampo1.setText("id");
+            this.labelInstruccion.setText("Intrucciones: Ingrese el id del autor que desea" +
+                    "eliminar");
 
         }if (e.getSource() == this.btnEnviar){
             Consulta consulta = new Consulta(admin);
             String estadoActual = getEstadoActual();
 
             if(estadoActual == "agregar"){
-
+                try {
+                    consulta.registrarAutor(this.campo1.getText(),
+                            this.campo2.getText(), Date.valueOf(this.campo3.getText()));
+                    JOptionPane.showMessageDialog(null, "Autor agregado correctamente");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }if(estadoActual == "eliminar"){
+                try {
+                    consulta.eliminarAutor(Integer.parseInt(this.campo1.getText()));
+                    JOptionPane.showMessageDialog(null, "Autor eliminado correctamente");
+                }catch (SQLException ex){
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }if (estadoActual == "modificar"){
+                try {
+                    consulta.modificarAutor(Integer.parseInt(campo1.getText()), campo2.getText(),
+                            campo3.getText(), Date.valueOf(campo4.getText()));
+                    JOptionPane.showMessageDialog(null, "Autor Modificado correctamente");
+                }catch (SQLException ex){
+                    JOptionPane.showMessageDialog(this,ex.getMessage() , "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                limpiarCampos();
             }
         }
     }
@@ -95,7 +126,44 @@ public class MenuAutores extends MenuBase {
             gbc.weightx = 1.0;
             gbc.weighty = 1.0;
             contentPane.add(scrollPane, gbc);
-        } else {
+        }else if("modificar".equals(accion)){
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            labelCampo1.setText("id");
+            contentPane.add(labelCampo1, gbc);
+
+            gbc.gridx = 1;
+            contentPane.add(campo1, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            labelCampo2.setText("Nombre");
+            contentPane.add(labelCampo2, gbc);
+
+            gbc.gridx = 1;
+            contentPane.add(campo2, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            labelCampo3.setText("País");
+            contentPane.add(labelCampo3, gbc);
+
+            gbc.gridx = 1;
+            contentPane.add(campo3, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            labelCampo4.setText("Fecha de Nacimiento");
+            contentPane.add(labelCampo4, gbc);
+
+            gbc.gridx = 1;
+            contentPane.add(campo4, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            gbc.gridwidth = 3;
+            contentPane.add(labelInstruccion, gbc);
+        }else {
             gbc.gridx = 0;
             gbc.gridy = 0;
 
