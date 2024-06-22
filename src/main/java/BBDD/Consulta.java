@@ -275,8 +275,8 @@ public class Consulta {
 
     public void realizarVenta(int id_libro, String rut_cliente, Date fechaVenta,
                               int cantidad) throws SQLException {
-        String sql = "INSERT INTO Venta (id_libro, rut_cliente, fecha_venta, cantidad, total) " +
-                "VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO Venta (id_libro, rut_cliente, fecha_venta, cantidad) " +
+                "VALUES (?,?,?,?);";
         Connection conn = null;
         PreparedStatement statement = null;
         try{
